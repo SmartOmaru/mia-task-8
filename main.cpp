@@ -25,7 +25,10 @@ public:
     // Method to see if the attack hits the target
     bool attempt_hit(int chance_increase = 0) const {
         // Simple hit chance calculation (could be improved)
-        return (rand() % 100) < (accuracy * (100 + chance_increase));
+        int roll = rand() % 100;
+        int chance = static_cast<int>(accuracy * 100) + chance_increase;
+        if (chance > 100) chance = 100;
+        return roll < chance;
     }
 };
 
