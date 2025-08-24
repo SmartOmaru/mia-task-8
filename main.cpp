@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 class Weapons {
@@ -45,7 +48,7 @@ protected:
     const vector<Weapons>& get_arsenal() const { return arsenal; }
 
 public:
-    Character(string name, bool turn = false, int health = 100, vector<Weapons> arsenal)
+    Character(string name, bool turn = false, int health = 100, vector<Weapons> arsenal = {})
     : name(name), current_turn(turn), health(health), arsenal(arsenal) {}
 
     // Getter methods
@@ -67,23 +70,35 @@ public:
 class Autobot : public Character {
 
 public:
-    Autobot(string name, bool turn = false, int health = 100, vector<Weapons> arsenal)
+    Autobot(string name, bool turn = false, int health = 100, vector<Weapons> arsenal = {})
     : Character(name, turn, health, arsenal) {}
 
     void attack(Character& target) override {
-        int chance_increase = 0;
+        int damage_increase = 0;
+
+        // Weapon choosing logic
+        // Autobots will choose lower accuracy weapons (since they have higher accuracy) when low on health
         Weapons& weapon = get_arsenal()[rand() % get_arsenal().size()];
+        if (get_health() < 50) {
+            // Choose a weapon with lower accuracy
+            sort(get_arsenal().begin(), get_arsenal().end(),
+          [](const Weapons& a, const Weapons& b) {
+              return a.get_accuracy() > b.get_accuracy();
+          });
+          
+          weapon = get_arsenal().front();
+        }
 
         // Roll for a special mode that increases chance to hit (chance is inversely proportional with health)
         if (rand() % 100 < (100.0 / get_health())) {
             cout << get_name() << " is in last stand mode!" << endl;
-            chance_increase = 20;  // Increase chance by 20%
+            damage_increase = static_cast<int>(weapon.get_damage() * 0.2);  // Increase damage by 20%
         }
 
-        if (weapon.attempt_hit(chance_increase)) {
-            target.take_damage(weapon.get_damage());
+        if (weapon.attempt_hit()) {
+            target.take_damage(weapon.get_damage() + damage_increase);
             cout << get_name() << " attacks " << target.get_name() << " with " << weapon.get_name()
-                 << " for " << weapon.get_damage() << " damage!" << endl;
+                 << " for " << weapon.get_damage() + damage_increase << " damage!" << endl;
         } else {
             cout << get_name() << " missed the attack on " << target.get_name() << "!" << endl;
         }
@@ -93,23 +108,35 @@ public:
 class Decepticon : public Character {
 
 public:
-    Decepticon(string name, bool turn = false, int health = 100, vector<Weapons> arsenal)
+    Decepticon(string name, bool turn = false, int health = 100, vector<Weapons> arsenal = {})
     : Character(name, turn, health, arsenal) {}
 
     void attack(Character& target) override {
-        int damage_increase = 0;
+        int chance_increase = 0;
+        
+        // Weapon choosing logic
+        // Decpticons will choose lower accuracy weapons (since they have higher damage) when low on health
         Weapons& weapon = get_arsenal()[rand() % get_arsenal().size()];
+        if (get_health() < 50) {
+            // Choose a weapon with lower accuracy
+            sort(get_arsenal().begin(), get_arsenal().end(),
+          [](const Weapons& a, const Weapons& b) {
+              return a.get_accuracy() < b.get_accuracy();
+          });
+
+          weapon = get_arsenal().front();
+        }
 
         // Roll for a special mode that increases damage (chance is inversely proportional with health)
         if (rand() % 100 < (100.0 / get_health())) {
             cout << get_name() << " is in all out mode!" << endl;
-            damage_increase = static_cast<int>(weapon.get_damage() * 0.2);  // Increase damage by 20%
+            chance_increase = 20;  // Increase chance by 20%
         }
 
-        if (weapon.attempt_hit()) {
-            target.take_damage(weapon.get_damage() + damage_increase);
+        if (weapon.attempt_hit(chance_increase)) {
+            target.take_damage(weapon.get_damage());
             cout << get_name() << " attacks " << target.get_name() << " with " << weapon.get_name()
-                 << " for " << weapon.get_damage() + damage_increase << " damage!" << endl;
+                 << " for " << weapon.get_damage() << " damage!" << endl;
         } else {
             cout << get_name() << " missed the attack on " << target.get_name() << "!" << endl;
         }
