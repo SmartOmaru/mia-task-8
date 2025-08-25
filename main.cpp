@@ -24,7 +24,6 @@ public:
     string get_name() const { return name; }
     int get_damage() const { return damage; }
     float get_accuracy() const { return accuracy; }
-    string get_description() const { return description; }
 
     // Method to see if the attack hits the target
     bool attempt_hit(int chance_increase = 0) const
