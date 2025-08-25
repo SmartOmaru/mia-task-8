@@ -117,7 +117,8 @@ public:
         }
         else
         {
-            cout << get_name() << " missed the attack on " << target.get_name() << "!" << endl;
+            cout << get_name() << " attacks " << target.get_name() << " with " << weapon.get_name()
+             << " but misses!" << endl;
         }
     }
 };
@@ -164,7 +165,8 @@ public:
         }
         else
         {
-            cout << get_name() << " missed the attack on " << target.get_name() << "!" << endl;
+            cout << get_name() << " attacks " << target.get_name() << " with " << weapon.get_name()
+                 << " but misses!" << endl;
         }
     }
 };
@@ -225,7 +227,7 @@ int main()
             cout << "Megatron wins!" << endl;
             break;
         } else if (!Megatron.is_alive()) {
-            cout << "Optimus Prime wins!" << endl;
+            cout << "Optimus Prime wins with " << Optimus.get_health() << " health remaining!" << endl;
             break;
         }
     }
