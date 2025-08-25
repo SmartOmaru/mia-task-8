@@ -105,7 +105,7 @@ public:
         int chance = (100 - get_health()) / 2;
         if (rand() % 100 < chance)
         {
-            cout << get_name() << " is in last stand mode for this attack!" << endl;
+            cout << get_name() << " enters last stand mode for this attack!" << endl;
             damage_increase = static_cast<int>(weapon.get_damage() * 0.2); // Increase damage by 20%
         }
 
@@ -153,7 +153,7 @@ public:
         int chance = (100 - get_health()) / 2;
         if (rand() % 100 < chance)
         {
-            cout << get_name() << " is in all out mode for this attack!" << endl;
+            cout << get_name() << " enters all out mode for this attack!" << endl;
             chance_increase = 20; // Increase chance by 20%
         }
 
