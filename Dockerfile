@@ -2,7 +2,7 @@ FROM gcc:latest
 
 WORKDIR /app
 
-COPY ../main.cpp .
+COPY main.cpp .
 
 RUN g++ -o battle main.cpp
 
